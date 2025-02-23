@@ -1,5 +1,6 @@
 package com.pixesoj.deluxeteleport.subcommands;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.pixesoj.deluxeteleport.DeluxeTeleport;
@@ -104,8 +105,7 @@ public class ChangelogSubCmd implements SubCommand {
                 response.append(inputLine);
             }
             in.close();
-
-            JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
+            JsonObject jsonResponse = new JsonParser().parse(response.toString()).getAsJsonObject();
             String changelogBody = jsonResponse.get("body").getAsString();
 
             String version = jsonResponse.get("name").getAsString();

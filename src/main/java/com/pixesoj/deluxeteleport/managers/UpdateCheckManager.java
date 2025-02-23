@@ -32,12 +32,12 @@ public class UpdateCheckManager {
                 try (InputStream inputStream = connection.getInputStream();
                      InputStreamReader reader = new InputStreamReader(inputStream)) {
 
-                    JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+                    JsonObject json = new JsonParser().parse(reader).getAsJsonObject();
                     String latestVersion = json.get("name").getAsString();
                     if (latestVersion.contains("-")) latestVersion = latestVersion.split("-")[0];
-
                     String downloadUrl = null;
-                    if (json.has("assets") && !json.getAsJsonArray("assets").isEmpty()) {
+
+                    if (json.has("assets") && json.getAsJsonArray("assets").size() > 0) {
                         JsonArray assets = json.getAsJsonArray("assets");
                         downloadUrl = assets.get(0).getAsJsonObject().get("browser_download_url").getAsString();
                     }
@@ -78,8 +78,8 @@ public class UpdateCheckManager {
                     response.append(inputLine);
                 }
                 in.close();
-
-                JsonArray releases = JsonParser.parseString(response.toString()).getAsJsonArray();
+                JsonObject json = new JsonParser().parse(response.toString()).getAsJsonObject();
+                JsonArray releases = json.getAsJsonArray("releases");
 
                 for (int i = 0; i < releases.size(); i++) {
                     JsonObject release = releases.get(i).getAsJsonObject();
